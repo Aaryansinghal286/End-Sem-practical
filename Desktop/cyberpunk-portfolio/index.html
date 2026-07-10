@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game-based Portfolio</title>
+    <meta name="description" content="An immersive, interactive cyberpunk terminal and hacking node game portfolio showcasing developer skills, projects, and contact information. Built with vanilla HTML, CSS, and JS.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Outfit:wght@300;400;600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="crt-active sound-active text-mode-normal">
+    <!-- CRT Overlay Effects -->
+    <div class="crt-overlay" id="crt-overlay"></div>
+    <div class="scanlines" id="scanlines"></div>
+    <div class="screen-flicker"></div>
+
+    <!-- Background Glitch Ambient Text -->
+    <div class="bg-matrix-container">
+        <canvas id="bg-matrix-canvas"></canvas>
+    </div>
+
+    <!-- Header Controls -->
+    <header class="header-controls">
+        <div class="system-title">
+            <span class="glitch-text" data-text="PORTFOLIO_OS v4.2.9">PORTFOLIO_OS v4.2.9</span>
+        </div>
+        <div class="control-buttons">
+            <button id="sound-btn" class="ctrl-btn active" title="Toggle Sound Synth">
+                <span class="btn-icon">🔊</span> <span class="btn-text">SOUND: ON</span>
+            </button>
+            <button id="access-btn" class="ctrl-btn" title="Toggle Plain Text/High Contrast">
+                <span class="btn-icon">♿</span> <span class="btn-text">ACCESSIBILITY</span>
+            </button>
+            <button id="mobile-mode-btn" class="ctrl-btn mobile-only" title="Toggle Views">
+                <span class="btn-text">VIEW: MAP</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main id="app-container" class="layout-split">
+        <!-- Left Panel: The Interactive Console Terminal -->
+        <section class="panel terminal-panel" id="terminal-panel-view">
+            <div class="panel-header">
+                <span class="panel-title">// SECURITY_TERMINAL_SHELL</span>
+                <span class="status-indicator online">SYS_OK</span>
+            </div>
+            <div class="panel-content terminal-wrapper">
+                <div class="terminal-log" id="terminal-output" role="log" aria-live="polite">
+                    <!-- Boot sequence content loaded dynamically or written here -->
+                    <div class="boot-line text-cyan">Initializing PORTFOLIO_OS boot sequence...</div>
+                    <div class="boot-line text-green">[OK] Loaded core components.</div>
+                    <div class="boot-line text-green">[OK] Loaded network interfaces.</div>
+                    <div class="boot-line text-green">[OK] Synthesizer audio engine ready.</div>
+                    <div class="boot-line text-yellow">WARNING: Node encryption active. Unlocked access is required.</div>
+                    <div class="boot-line text-cyan">Type 'help' to see list of available commands.</div>
+                    <div class="boot-line info-banner">
+======================================================
+  ██████╗██╗   ██╗██████╗ ███████╗██████╗  ██████╗  ██████╗
+ ██╔════╝╚██╗ ██╔╝██╔══██╗██╔════╝██╔══██╗██╔═══██╗██╔═══██╗
+ ██║      ╚████╔╝ ██████╔╝█████╗  ██████╔╝██║   ██║██║   ██║
+ ██║       ╚██╔╝  ██╔══██╗██╔══╝  ██╔══██╗██║   ██║██║   ██║
+ ╚██████╗   ██║   ██████╔╝███████╗██║  ██║╚██████╔╝╚██████╔╝
+  ╚═════╝   ╚═╝   ╚═════╝ ╚══════╝╚═╝  ╚═╝ ╚═════╝  ╚═════╝
+======================================================
+    [DECRYPT PORTFOLIO DIRECTORY BY INTERACTING OR TYPING]
+======================================================
+                    </div>
+                </div>
+                <!-- Interactive Command Input -->
+                <div class="terminal-input-row">
+                    <span class="terminal-prompt">GUEST@CYBERPORTFOLIO:~$</span>
+                    <input type="text" id="terminal-input" autofocus autocomplete="off" spellcheck="false" aria-label="Terminal Prompt Input" placeholder="type 'help'..."/>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Panel: Hacking Node Network Map -->
+        <section class="panel visual-panel" id="network-panel-view">
+            <div class="panel-header">
+                <span class="panel-title">// VISUAL_NETWORK_NODES</span>
+                <span class="status-indicator warning" id="network-status">ENCRYPTED_LOCK</span>
+            </div>
+            <div class="panel-content visual-wrapper">
+                <div class="hud-stats">
+                    <div class="stat-item"><span class="label">NODE STATUS:</span> <span class="val text-yellow" id="hud-node-status">LOCKED</span></div>
+                    <div class="stat-item"><span class="label">DECRYPTION PROG:</span> <span class="val text-cyan" id="hud-node-progress">0%</span></div>
+                    <div class="stat-item"><span class="label">CONNECTED PEERS:</span> <span class="val text-green">127.0.0.1</span></div>
+                </div>
+                
+                <!-- Main SVG/Canvas visual node network graph -->
+                <div class="canvas-container">
+                    <canvas id="network-canvas" aria-label="Interactive portfolio nodes graph"></canvas>
+                </div>
+                
+                <div class="network-legend">
+                    <p>💡 <em>Drag/click nodes to query modules. Double-click the red "FIREWALL" node to trigger bypass.</em></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Hacking Mini-game Modal (Firewall Bypass) -->
+    <div id="decrypt-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="modal-title" class="glitch-text text-red" data-text="⚠ FIREWALL DETECTED: BYPASS SEQUENCE REQUIRED ⚠">⚠ FIREWALL DETECTED: BYPASS SEQUENCE REQUIRED ⚠</span>
+                <button id="close-modal-btn" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">
+                    Secure files encrypted. Establish dynamic node connections by matching the pattern displayed below.
+                </p>
+                <div class="game-hud">
+                    <div class="game-hud-stat">ATTEMPTS: <span id="game-attempts" class="text-cyan">3</span></div>
+                    <div class="game-hud-stat">LEVEL: <span id="game-level" class="text-green">1/3</span></div>
+                    <div class="game-hud-stat">TIMER: <span id="game-timer" class="text-yellow">15s</span></div>
+                </div>
+                <div class="game-grid-wrapper">
+                    <!-- Grid generated in JS -->
+                    <div id="game-grid" class="game-grid"></div>
+                </div>
+                <div id="game-message" class="game-message text-center text-cyan">Preparing hacking matrix...</div>
+            </div>
+            <div class="modal-footer">
+                <button id="start-game-btn" class="cyber-btn primary">INITIALIZE SECURE SHUNT</button>
+                <button id="abort-game-btn" class="cyber-btn secondary">ABORT BYPASS</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Drawer for accessibility / quick non-gamer access -->
+    <nav class="side-navigation" id="fast-travel-nav">
+        <button id="toggle-nav-btn" class="nav-toggle" aria-label="Toggle Fast Travel Menu">📂 FAST_TRAVEL</button>
+        <div class="nav-menu-content">
+            <h3>📂 DIRECTORY</h3>
+            <ul>
+                <li><button class="nav-link-btn" data-cmd="about">📁 ABOUT_ME.TXT</button></li>
+                <li><button class="nav-link-btn" data-cmd="skills">📁 SKILLS.EXE</button></li>
+                <li><button class="nav-link-btn" data-cmd="projects">📁 PROJECTS.BIN</button></li>
+                <li><button class="nav-link-btn" data-cmd="contact">📁 CONTACT.SYS</button></li>
+                <li><button class="nav-link-btn" data-cmd="bypass">⚡ BYPASS_FIREWALL</button></li>
+                <li><button class="nav-link-btn" data-cmd="system">⚙️ SYSTEM_INFO</button></li>
+            </ul>
+            <div class="nav-footer">
+                <p>PORTFOLIO OS v4.2.9</p>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+</body>
+</html>
